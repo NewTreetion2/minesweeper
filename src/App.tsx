@@ -1,56 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Menubar from "components/Menu/Menubar";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
+import Minesweeper from "components/Minesweeper/Minesweeper";
 
 function App() {
+  const level = useSelector((state: RootState) => {
+    return state.level.value;
+  });
+  const game = useSelector((state: RootState) => {
+    return state.game.state;
+  });
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
+      <header>
+        <Menubar />
       </header>
+      <main>
+        <p>가로 {level.width}</p>
+        <p>세로 {level.height}</p>
+        <p>폭탄 수 {level.bomb}</p>
+        {game === "start" ? <Minesweeper /> : ""}
+      </main>
     </div>
   );
 }
