@@ -1,0 +1,12 @@
+.mineButton {
+  width: 30px;
+  height: 30px;
+}
+
+.mine {
+  background-color: red;
+}
+
+.flag {
+  background-color: blue;
+}

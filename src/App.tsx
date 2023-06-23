@@ -13,15 +13,6 @@ function App() {
   const gameState = useSelector((state: RootState) => {
     return state.game.state;
   });
-  const gameTable = useSelector((state: RootState) => {
-    return state.table.table;
-  });
-
-  useEffect(() => {
-    document.addEventListener("contextmenu", (event) => {
-      console.log(event);
-    });
-  }, []);
 
   return (
     <div className="App">

@@ -15,16 +15,16 @@ const gameSlice = createSlice({
     gameStart: (state) => {
       state.state = "start";
     },
+    gameReady: (state) => {
+      state.state = "ready";
+    },
     gameEnd: (state) => {
       state.state = "end";
-    },
-    gameWait: (state) => {
-      state.state = "waiting";
     },
   },
 });
 
-// 게임의 상태관리 (시작, 중지, 대기)
+// 게임의 상태관리 (시작, 시작대기, 중지, 대기)
 
 export default gameSlice;
-export const { gameStart, gameEnd, gameWait } = gameSlice.actions;
+export const { gameStart, gameReady, gameEnd } = gameSlice.actions;
