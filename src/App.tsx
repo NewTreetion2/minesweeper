@@ -1,17 +1,27 @@
-import React from "react";
-import "./App.css";
-import Menubar from "components/Menu/Menubar";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
-import Minesweeper from "components/Minesweeper/Minesweeper";
+import MineTable from "components/Minesweeper/MineTable";
+import Menubar from "components/Menu/Menubar";
+
+import "./App.css";
 
 function App() {
   const level = useSelector((state: RootState) => {
     return state.level.value;
   });
-  const game = useSelector((state: RootState) => {
+  const gameState = useSelector((state: RootState) => {
     return state.game.state;
   });
+  const gameTable = useSelector((state: RootState) => {
+    return state.table.table;
+  });
+
+  useEffect(() => {
+    document.addEventListener("contextmenu", (event) => {
+      console.log(event);
+    });
+  }, []);
 
   return (
     <div className="App">
@@ -19,10 +29,11 @@ function App() {
         <Menubar />
       </header>
       <main>
-        <p>가로 {level.width}</p>
-        <p>세로 {level.height}</p>
-        <p>폭탄 수 {level.bomb}</p>
-        {game === "start" ? <Minesweeper /> : ""}
+        <p>
+          가로 {level.width} 세로 {level.height} 폭탄 수 {level.bomb}
+        </p>
+
+        {gameState === "ready" || "start" ? <MineTable /> : ""}
       </main>
     </div>
   );
