@@ -7,18 +7,20 @@ import {
   mineOpen,
   openButton,
 } from "store/tableSlice";
-import { buttonInfo } from "store/types";
 import { gameEnd, gameStart } from "store/gameSlice";
-import { placeMine } from "./Minesweeper";
 
-import "components/Minesweeper/MineButton.css";
+import { buttonInfo } from "store/types";
+import { placeMine } from "./MineSweeper";
+
+import "components/MineSweeper/MineButton.css";
 
 function MineButton({ info }: { info: buttonInfo }) {
   const gameState = useSelector((state: RootState) => state.game.state);
+
   const level = useSelector((state: RootState) => state.level.value);
   const { width, height, bomb } = level;
 
-  const cell = { state: 0, clicked: false, x: 0, y: 0 };
+  const cell = { state: 0, clicked: false, x: 0, y: 0, flag: false };
   let table: buttonInfo[][] = new Array(height).fill(null).map((item, i) =>
     new Array(width).fill(null).map((item, j) => ({
       ...cell,
@@ -49,23 +51,28 @@ function MineButton({ info }: { info: buttonInfo }) {
       } else if (info.state === 0) {
         dispatch(emptyOpen([info.x, info.y, width, height]));
       }
+    } else if (gameState === "end") {
+      e.preventDefault();
     }
   };
 
   const onContextMenuHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    dispatch(flagButton([info.x, info.y]));
+    if (gameState === "start") {
+      e.preventDefault();
+      dispatch(flagButton([info.x, info.y]));
+    }
   };
 
   return (
     <button
-      className={`mineButton ${
+      className={`button ${
         info.state === -1 && info.clicked === true ? "mine" : ""
-      } ${info.state === -2 && info.clicked === false ? "flag" : ""}`}
+      } ${info.flag === true && info.clicked === false ? "flag" : ""}
+      ${info.state >= 0 && info.clicked === true ? "blank" : ""}`}
       onClick={onClickHandler}
       onContextMenu={onContextMenuHandler}
     >
-      {info.clicked ? info.state : ""}
+      {info.clicked && info.state > 0 ? info.state : ""}
     </button>
   );
 }
