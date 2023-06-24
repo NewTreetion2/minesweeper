@@ -1,11 +1,11 @@
 import { buttonInfo } from "store/types";
 
-function Minesweeper() {
+function MineSweeper() {
   // 0은 빈 공간, 1부터는 주변의 지뢰 갯수, -1은 지뢰로 명시한다
   // table = placeMine(width, height, bomb, table); // 현재는 테이블 생성과 동시에 지뢰가 만들어지는데 추후 첫번째 클릭 이후에 만들어지도록 변경
 }
 
-export default Minesweeper;
+export default MineSweeper;
 
 function placeMine( // 지뢰를 랜덤으로 배치하는 함수
   width: number,

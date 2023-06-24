@@ -1,7 +1,7 @@
 import { RootState } from "store/store";
 import { useSelector } from "react-redux/es/hooks/useSelector";
-import MineButton from "./MineButton";
 import { buttonInfo } from "store/types";
+import { MineButton } from "components/MineSweeper/index";
 
 function MineTable() {
   const renderTable = useSelector((state: RootState) => state.table.table);

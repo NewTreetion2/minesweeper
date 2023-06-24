@@ -1,3 +1,3 @@
-import { default as Minesweeper } from "components/Minesweeper/Minesweeper";
-import { default as MineTable } from "components/Minesweeper/MineTable";
-import { default as MineButton } from "components/Minesweeper/MineButton";
+export { default as MineSweeper } from "components/MineSweeper/MineSweeper";
+export { default as MineButton } from "components/MineSweeper/MineButton";
+export { default as MineTable } from "components/MineSweeper/MineTable";
