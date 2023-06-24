@@ -3,10 +3,16 @@ import { buttonInfo } from "./types";
 
 type InitialState = {
   table: buttonInfo[][];
+  btnCount: number;
+  bombCount: number;
+  flagCount: number;
 };
 
 const initialState: InitialState = {
   table: [],
+  btnCount: 0,
+  bombCount: 0,
+  flagCount: 0,
 };
 
 const tableSlice = createSlice({
@@ -15,7 +21,10 @@ const tableSlice = createSlice({
   reducers: {
     initTable: (state, action) => {
       // 최초 지뢰판 초기화
-      state.table = action.payload;
+      state.table = action.payload[0];
+      state.btnCount = action.payload[1] * action.payload[2];
+      state.bombCount = action.payload[3];
+      state.flagCount = 0;
     },
     changeTable: (state, action) => {
       // 데이터가 추가된 지뢰판으로 변경
@@ -23,7 +32,15 @@ const tableSlice = createSlice({
     },
     openButton: (state, action) => {
       // 클릭된 버튼의 clicked를 변경시켜 오픈
-      state.table[action.payload[1]][action.payload[0]].clicked = true;
+      if (state.table[action.payload[1]][action.payload[0]].clicked === false) {
+        state.btnCount--;
+        state.table[action.payload[1]][action.payload[0]].clicked = true;
+      }
+
+      if (state.table[action.payload[1]][action.payload[0]].flag === true) {
+        state.flagCount--;
+        state.table[action.payload[1]][action.payload[0]].flag = false;
+      }
     },
     mineOpen: (state) => {
       // 만약 지뢰를 찾아 게임이 종료될 경우 모든 지뢰 오픈
@@ -38,7 +55,10 @@ const tableSlice = createSlice({
     emptyOpen: (state, action) => {
       // 0을 클릭했을 경우 근처의 지뢰를 제외한 모든 칸 오픈
       function isMineHere(x: number, y: number, width: number, height: number) {
-        state.table[y][x].clicked = true;
+        if (state.table[y][x].clicked === false) {
+          state.btnCount--;
+          state.table[y][x].clicked = true;
+        }
         let iLen: number = y + 2;
         let jLen: number = x + 2;
         let noMine: boolean = true;
@@ -51,7 +71,8 @@ const tableSlice = createSlice({
               i === height ||
               j === width ||
               (i === x && j === y) ||
-              state.table[i][j].clicked === true
+              state.table[i][j].clicked === true ||
+              state.table[i][j].flag === true
             ) {
               continue;
             }
@@ -70,7 +91,8 @@ const tableSlice = createSlice({
                 i === height ||
                 j === width ||
                 (i === x && j === y) ||
-                state.table[i][j].clicked === true
+                state.table[i][j].clicked === true ||
+                state.table[i][j].flag === true
               ) {
                 continue;
               }
@@ -88,7 +110,26 @@ const tableSlice = createSlice({
     },
     flagButton: (state, action) => {
       // 우측 마우스 클릭 시 플래그 설치, 알고리즘 이후 추가 예정
-      state.table[action.payload[1]][action.payload[0]].state = -2;
+      if (
+        !state.table[action.payload[1]][action.payload[0]].flag &&
+        state.table[action.payload[1]][action.payload[0]].clicked === false
+      ) {
+        state.flagCount++;
+        if (state.table[action.payload[1]][action.payload[0]].state === -1) {
+          state.table[action.payload[1]][action.payload[0]].flag = true;
+          state.bombCount--;
+        } else {
+          state.table[action.payload[1]][action.payload[0]].flag = true;
+        }
+      } else if (state.table[action.payload[1]][action.payload[0]].flag) {
+        state.flagCount--;
+        if (state.table[action.payload[1]][action.payload[0]].state === -1) {
+          state.table[action.payload[1]][action.payload[0]].flag = false;
+          state.bombCount++;
+        } else {
+          state.table[action.payload[1]][action.payload[0]].flag = false;
+        }
+      }
     },
   },
 });
