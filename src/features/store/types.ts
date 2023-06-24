@@ -9,4 +9,5 @@ export interface buttonInfo {
   clicked: boolean; // 클릭이 됐는지 여부
   x: number; // 클릭된 객체의 x 좌표
   y: number; // 클릭된 객체의 y 좌표
+  flag: boolean;
 }
