@@ -70,7 +70,7 @@ function MineButton({ info }: { info: buttonInfo }) {
   return (
     <button
       className={`button ${
-        info.state === -1 && info.clicked === false ? "mine" : ""
+        info.state === -1 && info.clicked === true ? "mine" : ""
       } ${info.flag === true && info.clicked === false ? "flag" : ""}
       ${info.state >= 0 && info.clicked === true ? "blank" : ""}`}
       onClick={onClickHandler}
