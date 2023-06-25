@@ -8,9 +8,11 @@ import {
   openButton,
 } from "store/tableSlice";
 import { gameEnd, gameStart } from "store/gameSlice";
+import { startTimer, stopTimer } from "store/timeSlice";
 
 import { buttonInfo } from "store/types";
-import { placeMine } from "./MineSweeper";
+
+import { placeMine } from "./MineLogic";
 
 import "components/MineSweeper/MineButton.css";
 
@@ -36,6 +38,7 @@ function MineButton({ info }: { info: buttonInfo }) {
       table = placeMine(width, height, bomb, table, info.x, info.y); // 지뢰가 포함된 데이터 테이블 생산 -> 최초 1회에 터지지 않게 하기 위한 로직
       dispatch(changeTable(table));
       dispatch(gameStart());
+      dispatch(startTimer());
       if (info.state === 0) {
         dispatch(emptyOpen([info.x, info.y, width, height]));
       } else {
@@ -46,6 +49,7 @@ function MineButton({ info }: { info: buttonInfo }) {
         alert("지뢰를 고르셨습니다. 패배!");
         dispatch(mineOpen());
         dispatch(gameEnd());
+        dispatch(stopTimer());
       } else if (info.state > 0) {
         dispatch(openButton([info.x, info.y]));
       } else if (info.state === 0) {
@@ -66,7 +70,7 @@ function MineButton({ info }: { info: buttonInfo }) {
   return (
     <button
       className={`button ${
-        info.state === -1 && info.clicked === true ? "mine" : ""
+        info.state === -1 && info.clicked === false ? "mine" : ""
       } ${info.flag === true && info.clicked === false ? "flag" : ""}
       ${info.state >= 0 && info.clicked === true ? "blank" : ""}`}
       onClick={onClickHandler}

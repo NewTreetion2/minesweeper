@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import { initTable } from "store/tableSlice";
 import { gameReady } from "store/gameSlice";
 import { buttonInfo } from "store/types";
+import { stopTimer } from "store/timeSlice";
 
 function StartBtn() {
   const level = useSelector((state: RootState) => state.level.value);
@@ -29,6 +30,7 @@ function StartBtn() {
     alert(
       `가로: ${level.width} 세로: ${level.height} 폭탄: ${level.bomb}으로 게임을 시작합니다`
     );
+    dispatch(stopTimer());
     dispatch(gameReady());
     dispatch(initTable([readyTable, width, height, bomb]));
   };

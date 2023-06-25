@@ -23,21 +23,25 @@ const levelSlice = createSlice({
   initialState,
   reducers: {
     beginner: (state) => {
+      state.id = "Beginner";
       state.value.width = 8;
       state.value.height = 8;
       state.value.bomb = 10;
     },
     intermediate: (state) => {
+      state.id = "Intermediate";
       state.value.width = 16;
       state.value.height = 16;
       state.value.bomb = 40;
     },
     expert: (state) => {
+      state.id = "Expert";
       state.value.width = 32;
       state.value.height = 16;
       state.value.bomb = 99;
     },
     custom: (state, action) => {
+      state.id = "Custom";
       state.value.width = action.payload.width;
       state.value.height = action.payload.height;
       state.value.bomb = action.payload.bomb;

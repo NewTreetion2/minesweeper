@@ -52,22 +52,24 @@ function CustomBtn() {
             }}
           />
         </div>
-        <Button
-          onClick={() => {
-            if (
-              customInfo.width * customInfo.height <= customInfo.bomb ||
-              customInfo.bomb <= 0
-            ) {
-              alert(
-                "폭탄 수가 0보다 작거나 가로 세로의 곱보다 많습니다. 다시 입력해주세요"
-              );
-            } else {
-              dispatch(custom(customInfo));
-            }
-          }}
-        >
-          확인
-        </Button>
+        <div>
+          <Button
+            onClick={() => {
+              if (
+                customInfo.width * customInfo.height <= customInfo.bomb ||
+                customInfo.bomb <= 0
+              ) {
+                alert(
+                  "폭탄 수가 0보다 작거나 가로 세로의 곱보다 많습니다. 다시 입력해주세요"
+                );
+              } else {
+                dispatch(custom(customInfo));
+              }
+            }}
+          >
+            확인
+          </Button>
+        </div>
       </div>
     </DropdownButton>
   );

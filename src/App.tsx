@@ -1,50 +1,59 @@
+import React from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import { gameEnd, gameWin } from "store/gameSlice";
+import { stopTimer } from "store/timeSlice";
 
 import { Menubar } from "components/Menu";
-import { MineTable } from "components/MineSweeper/index";
+import { Timer } from "components/Timer";
+import { MineTable } from "components/MineSweeper/";
 
 import "./App.css";
 
-function App() {
+const App = React.memo(() => {
   const dispatch = useDispatch();
   // const [time, setTime] = useState<number>(0);
-  const level = useSelector((state: RootState) => {
-    return state.level.value;
-  });
-  const gameState = useSelector((state: RootState) => {
-    return state.game.state;
-  });
+  const { id, value } = useSelector(
+    (state: RootState) => state.level,
+    (prev, next) => prev === next
+  );
+  const gameState = useSelector(
+    (state: RootState) => state.game.state,
+    (prev, next) => prev === next
+  );
+  const { btnCount, bombCount, flagCount } = useSelector(
+    (state: RootState) => state.table,
+    (prev, next) =>
+      prev.btnCount === next.btnCount &&
+      prev.bombCount === next.bombCount &&
+      prev.flagCount === next.flagCount
+  );
+  const { finalTime, isRunning } = useSelector(
+    (state: RootState) => state.time,
+    (prev, next) =>
+      prev.finalTime === next.finalTime && prev.isRunning === next.isRunning
+  );
   const isWin = useSelector((state: RootState) => {
     return state.game.win;
   });
-  const { btnCount, bombCount, flagCount } = useSelector((state: RootState) => {
-    return state.table;
-  });
-
-  // let setTimer: NodeJS.Timer;
-
-  // function timer() {
-  //   setTimer = setInterval(function () {
-  //     setTime((prevCount) => prevCount + 1);
-  //   }, 1000);
-  // }
-
-  // function resetTimer() {
-  //   clearInterval(setTimer);
-  //   setTime(0);
-  // }
 
   useEffect(() => {
     if (
-      (btnCount === level.bomb || bombCount === 0) &&
+      (btnCount === value.bomb || bombCount === 0) &&
       gameState === "start" &&
-      flagCount < level.bomb
+      flagCount < value.bomb
     ) {
       dispatch(gameWin());
       dispatch(gameEnd());
+    }
+
+    if (isWin) {
+      alert(`${finalTime}초 만에 승리하셨습니다!`);
+    }
+
+    if (gameState === "end") {
+      dispatch(stopTimer());
     }
   }, [btnCount, bombCount, gameState]);
 
@@ -54,20 +63,22 @@ function App() {
         <Menubar />
       </header>
       <main>
-        <p>
-          가로 {level.width} 세로 {level.height} 폭탄 수 {level.bomb}
-        </p>
-        <div>
-          {gameState === "ready" || "start" ? <MineTable /> : ""}
-          {isWin ? <p>승리하셨습니다</p> : ""}
+        <div className="level">
+          <div>선택된 레벨 : {id} </div>
+          <div>가로 : {value.width} </div>
+          <div>세로 : {value.height} </div>
+          <div>폭탄 수 : {value.bomb}</div>
         </div>
-        <p>
-          남은 버튼 수: {btnCount} 남은 폭탄 수: {bombCount} 화면에 띄워줄
-          폭탄에서 깃발을 뺀 값 {level.bomb - flagCount}
-        </p>
+        <div>
+          <div className="timer">
+            <div>Flag : {value.bomb - flagCount}</div>
+            <div>{isRunning ? <Timer /> : <div>Timer : 0</div>}</div>
+          </div>
+          {gameState === "ready" || "start" ? <MineTable /> : ""}
+        </div>
       </main>
     </div>
   );
-}
+});
 
 export default App;
