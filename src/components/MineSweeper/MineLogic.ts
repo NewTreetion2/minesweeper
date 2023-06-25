@@ -1,4 +1,5 @@
 import { buttonInfo } from "store/types";
+
 function MineLogic() {}
 function placeMine( // 지뢰를 랜덤으로 배치하는 함수
   width: number,

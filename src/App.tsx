@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import { RootState } from "store/store";
 import { gameEnd, gameWin } from "store/gameSlice";
 import { stopTimer } from "store/timeSlice";
@@ -42,7 +43,7 @@ const App = React.memo(() => {
     if (
       (btnCount === value.bomb || bombCount === 0) &&
       gameState === "start" &&
-      flagCount < value.bomb
+      flagCount >= 0 // 승리 조건
     ) {
       dispatch(gameWin());
       dispatch(gameEnd());
@@ -64,14 +65,14 @@ const App = React.memo(() => {
       </header>
       <main>
         <div className="level">
-          <div>선택된 레벨 : {id} </div>
-          <div>가로 : {value.width} </div>
-          <div>세로 : {value.height} </div>
-          <div>폭탄 수 : {value.bomb}</div>
+          <div className="levelText">선택된 레벨 : {id} </div>
+          <div className="infoText">가로 : {value.width} </div>
+          <div className="infoText">세로 : {value.height} </div>
+          <div className="infoText">폭탄 : {value.bomb}</div>
         </div>
         <div>
           <div className="timer">
-            <div>Flag : {value.bomb - flagCount}</div>
+            <div>Flag : {flagCount}</div>
             <div>{isRunning ? <Timer /> : <div>Timer : 0</div>}</div>
           </div>
           {gameState === "ready" || "start" ? <MineTable /> : ""}

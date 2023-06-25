@@ -1,8 +1,8 @@
 .level {
-  width: 480px;
+  width: 500px;
   height: 50px;
   display: flex;
-  justify-content: space-around;
+  gap: 10px;
 }
 
 .timer {
@@ -10,4 +10,12 @@
   height: 50px;
   display: flex;
   justify-content: space-around;
+}
+
+.levelText {
+  width: 200px;
+}
+
+.infoText {
+  width: 80px;
 }

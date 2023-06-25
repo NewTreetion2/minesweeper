@@ -1,0 +1,8 @@
+.tableWrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tableContent {
+  height: 32px;
+}

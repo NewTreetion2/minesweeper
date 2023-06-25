@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { customInfo } from "store/types";
 import { useDispatch } from "react-redux";
+
+import { customInfo } from "store/types";
 import { custom } from "store/levelSlice";
 
 import DropdownButton from "react-bootstrap/DropdownButton";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { Button } from "react-bootstrap";
 
-function CustomBtn() {
+import "components/Menu/CustomBtn.css";
+
+const CustomBtn = () => {
   const [customInfo, setCustomInfo] = useState<customInfo>({
     width: 8,
     height: 8,
@@ -22,10 +25,27 @@ function CustomBtn() {
     setCustomInfo({ width, height, bomb });
   }, [width, height, bomb]);
 
+  const onClickHandler = () => {
+    if (!width || !height || !bomb) {
+      alert("값이 입력되지 않았습니다. 다시 입력해주세요");
+      return;
+    }
+    if (
+      customInfo.width * customInfo.height <= customInfo.bomb ||
+      customInfo.bomb <= 0
+    ) {
+      alert(
+        "폭탄 수가 0보다 작거나 가로 세로의 곱보다 많습니다. 다시 입력해주세요"
+      );
+      return;
+    }
+    dispatch(custom(customInfo));
+  };
+
   return (
     <DropdownButton as={ButtonGroup} title="Custom" id="bg-nested-dropdown">
       <div>
-        <div>
+        <div className="inputArea">
           가로
           <input
             type="text"
@@ -34,7 +54,7 @@ function CustomBtn() {
             }}
           />
         </div>
-        <div>
+        <div className="inputArea">
           세로
           <input
             type="text"
@@ -43,7 +63,7 @@ function CustomBtn() {
             }}
           />
         </div>
-        <div>
+        <div className="inputArea">
           폭탄
           <input
             type="text"
@@ -52,27 +72,14 @@ function CustomBtn() {
             }}
           />
         </div>
-        <div>
-          <Button
-            onClick={() => {
-              if (
-                customInfo.width * customInfo.height <= customInfo.bomb ||
-                customInfo.bomb <= 0
-              ) {
-                alert(
-                  "폭탄 수가 0보다 작거나 가로 세로의 곱보다 많습니다. 다시 입력해주세요"
-                );
-              } else {
-                dispatch(custom(customInfo));
-              }
-            }}
-          >
+        <div className="confirm">
+          <Button size="sm" onClick={onClickHandler}>
             확인
           </Button>
         </div>
       </div>
     </DropdownButton>
   );
-}
+};
 
 export default CustomBtn;

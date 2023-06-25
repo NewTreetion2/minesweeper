@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { buttonInfo } from "./types";
 
+import { placeMine } from "components/MineSweeper/MineLogic";
+
 type InitialState = {
   table: buttonInfo[][];
   btnCount: number;
@@ -24,28 +26,38 @@ const tableSlice = createSlice({
       state.table = action.payload[0];
       state.btnCount = action.payload[1] * action.payload[2];
       state.bombCount = action.payload[3];
-      state.flagCount = 0;
+      state.flagCount = action.payload[3];
     },
     changeTable: (state, action) => {
       // 데이터가 추가된 지뢰판으로 변경
-      state.table = action.payload;
+      const width = action.payload[0];
+      const height = action.payload[1];
+      const bomb = action.payload[2];
+      const x = action.payload[3];
+      const y = action.payload[4];
+      state.table = placeMine(width, height, bomb, state.table, x, y);
     },
     openButton: (state, action) => {
+      const flagTrue =
+        state.table[action.payload[1]][action.payload[0]].flag === true;
+      const clickedFalse =
+        state.table[action.payload[1]][action.payload[0]].clicked === false;
+
       // 클릭된 버튼의 clicked를 변경시켜 오픈
-      if (state.table[action.payload[1]][action.payload[0]].clicked === false) {
+      if (clickedFalse) {
         state.btnCount--;
         state.table[action.payload[1]][action.payload[0]].clicked = true;
       }
 
-      if (state.table[action.payload[1]][action.payload[0]].flag === true) {
-        state.flagCount--;
+      if (flagTrue) {
+        state.flagCount++;
         state.table[action.payload[1]][action.payload[0]].flag = false;
       }
     },
     mineOpen: (state) => {
       // 만약 지뢰를 찾아 게임이 종료될 경우 모든 지뢰 오픈
-      state.table.map((item) => {
-        item.map((item) => {
+      state.table.forEach((item) => {
+        item.forEach((item) => {
           if (item.state === -1) {
             item.clicked = true;
           }
@@ -74,15 +86,17 @@ const tableSlice = createSlice({
               state.table[i][j].clicked === true ||
               state.table[i][j].flag === true
             ) {
+              // 클릭한 요소 주위 8칸을 탐색하는데 지뢰판을 벗어나는 경우, 클릭한 요소 본인, click된 요소, flag 처리된 요소는 건너뛴다
               continue;
             }
             if (state.table[i][j].state === -1) {
               noMine = false;
             }
           }
-        }
+        } // 클릭한 요소 주위에 지뢰가 있다면 noMine이 false가 되고 해당 칸은 재귀함수를 호출하지 않는다
 
         if (noMine) {
+          // 만일 클릭한 요소 주위에 지뢰가 없다면 조건문을 실행해 재귀함수를 호출
           for (let i = y - 1; i < iLen; i++) {
             for (let j = x - 1; j < jLen; j++) {
               if (
@@ -95,8 +109,8 @@ const tableSlice = createSlice({
                 state.table[i][j].flag === true
               ) {
                 continue;
-              }
-              isMineHere(j, i, width, height);
+              } // 마찬가지로 위의 경우는 제외하고
+              isMineHere(j, i, width, height); // 해당 칸을 기준으로 다시 재귀함수를 호출
             }
           }
         }
@@ -110,20 +124,26 @@ const tableSlice = createSlice({
     },
     flagButton: (state, action) => {
       // 우측 마우스 클릭 시 플래그 설치, 알고리즘 이후 추가 예정
-      if (
-        !state.table[action.payload[1]][action.payload[0]].flag &&
-        state.table[action.payload[1]][action.payload[0]].clicked === false
-      ) {
-        state.flagCount++;
-        if (state.table[action.payload[1]][action.payload[0]].state === -1) {
+      const flagFalse =
+        state.table[action.payload[1]][action.payload[0]].flag === false;
+      const flagTrue =
+        state.table[action.payload[1]][action.payload[0]].flag === true;
+      const clickedFalse =
+        state.table[action.payload[1]][action.payload[0]].clicked === false;
+      const isMine =
+        state.table[action.payload[1]][action.payload[0]].state === -1;
+
+      if (flagFalse && clickedFalse) {
+        state.flagCount--;
+        if (isMine) {
           state.table[action.payload[1]][action.payload[0]].flag = true;
           state.bombCount--;
         } else {
           state.table[action.payload[1]][action.payload[0]].flag = true;
         }
-      } else if (state.table[action.payload[1]][action.payload[0]].flag) {
-        state.flagCount--;
-        if (state.table[action.payload[1]][action.payload[0]].state === -1) {
+      } else if (flagTrue) {
+        state.flagCount++;
+        if (isMine) {
           state.table[action.payload[1]][action.payload[0]].flag = false;
           state.bombCount++;
         } else {

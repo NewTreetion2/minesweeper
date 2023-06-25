@@ -1,0 +1,8 @@
+.confirm {
+  height: 50px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin-right: 10px;
+  margin-top: 5px;
+}
