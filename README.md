@@ -1,7 +1,11 @@
 사용된 패키지
 
-1. css디자인을 위한 bootstrap
-2. Typescript와 redux-toolkit (CRA시 설치하지 못했을 경우)
-   npm i typescript @reduxjs/toolkit
+1. css 스타일링을 위한 bootstrap
+2. typescript 및 redux-toolkit
 
-npm i npm start 시 필요한 패키지들을 자동으로 받습니다.
+실행방법
+
+1. npx create-react-app my_app --template redux-typescript 명령어를 통해 타입스크립트, 리덕스 호환 CRA 환경 설치
+
+2. npm i bootstrap react-bootstrap 설치
+   (npm i npm start 명령어로 대체 가능)
